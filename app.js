@@ -2,7 +2,7 @@ function startGameLoop()
 {
     const currentTime = performance.now();
     const gameState = initializeGameState();
-    runUpdateLoop(gameState);
+    runUpdateLoop(currentTime, gameState);
     runDrawLoop(currentTime, gameState);
 }
 
@@ -10,26 +10,40 @@ function initializeGameState()
 {
     return {
         time: performance.now(),
+        timePassedSinceLastUpdate: Infinity
     };
-}
-
-function runUpdateLoop(gameState)
-{
-    update(gameState);
-    setImmediate(() => runUpdateLoop(gameState));
-}
-
-function update(gameState)
-{
-    gameState.time = performance.now();
 }
 
 function runDrawLoop(time, gameState)
 {
+    runLoop(
+        (delta) => draw(delta, gameState),
+        time,
+        requestAnimationFrame
+    );
+}
+
+function runUpdateLoop(time, gameState)
+{
+    runLoop(
+        (delta) => update(delta, gameState),
+        time,
+        setImmediate
+    );
+}
+
+function runLoop(callback, time, timer)
+{
     const newTime = performance.now();
     const delta = newTime - time;
-    draw(delta, gameState);
-    window.requestAnimationFrame(() => runDrawLoop(newTime, gameState));
+    callback(delta);
+    timer(() => runLoop(callback, newTime, timer));
+}
+
+function update(delta, gameState)
+{
+    gameState.time = performance.now();
+    gameState.timePassedSinceLastUpdate = delta;
 }
 
 function draw(delta, gameState)
@@ -38,5 +52,6 @@ function draw(delta, gameState)
         <div>Current Time: ${gameState.time}</div>
         <div>Time Passed: ${delta}</div>
         <div>Framerate: ${Math.round(1000 / delta)}</div>
+        <div>Time Passed Since Last Update: ${gameState.timePassedSinceLastUpdate}</div>
     `;
 }
