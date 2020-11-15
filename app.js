@@ -1,3 +1,8 @@
+/*import "./node_modules/setimmediate/setImmediate.js";
+import "./node_modules/domready/ready.js";*/
+
+//domready(startGameLoop);
+
 function startGameLoop()
 {
     const currentTime = performance.now();
@@ -9,8 +14,7 @@ function startGameLoop()
 function initializeGameState()
 {
     return {
-        time: performance.now(),
-        timePassedSinceLastUpdate: Infinity
+        time: performance.now()
     };
 }
 
@@ -43,7 +47,6 @@ function runLoop(callback, time, timer)
 function update(delta, gameState)
 {
     gameState.time = performance.now();
-    gameState.timePassedSinceLastUpdate = delta;
 }
 
 function draw(delta, gameState)
@@ -52,6 +55,7 @@ function draw(delta, gameState)
         <div>Current Time: ${gameState.time}</div>
         <div>Time Passed: ${delta}</div>
         <div>Framerate: ${Math.round(1000 / delta)}</div>
-        <div>Time Passed Since Last Update: ${gameState.timePassedSinceLastUpdate}</div>
+        <div>Update Rate: ${gameState.updateRate}</div>
+        <div>Update Delta Length: ${gameState.updateDeltas.length}</div>
     `;
 }
