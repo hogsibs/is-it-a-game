@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.6.1",
     "domready": "^1.0.8",
+    "fabric": "^4.2.0",
     "setimmediate": "^1.0.5"
   },
   "devDependencies": {
