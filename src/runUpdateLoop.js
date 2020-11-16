@@ -24,7 +24,8 @@ function update(delta, gameState)
         } else {
             gameState.player.targetDirection =
                 gameState.player.direction +
-                Math.random() * 2 * Math.PI - Math.PI;
+                (   (Math.random() > 0.5 ? 1 : -1) *
+                    (Math.random() * Math.PI / 2 + Math.PI / 2));
             directionDelta = delta - gameState.player.timeLeftInCurrentDirection;
         }
     }

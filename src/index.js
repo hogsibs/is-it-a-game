@@ -22,10 +22,10 @@ function initializeGameState()
                 x: 250,
                 y: 250
             },
-            speed: 50,
+            speed: 100,
             direction: 0,
             targetDirection: 0,
-            turnSpeed: Math.PI / 4,
+            turnSpeed: Math.PI,
             radius: 10,
             timeLeftInCurrentDirection: 0
         },
