@@ -19,10 +19,15 @@ function initializeGameState()
         time: performance.now(),
         player: {
             position: {
-                x: 100,
-                y: 100
+                x: 250,
+                y: 250
             },
-            radius: 10
+            speed: 50,
+            direction: 0,
+            targetDirection: 0,
+            turnSpeed: Math.PI / 4,
+            radius: 10,
+            timeLeftInCurrentDirection: 0
         },
         world: {
             size: {

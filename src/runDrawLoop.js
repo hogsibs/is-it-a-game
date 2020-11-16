@@ -1,57 +1,43 @@
+import { Application, Circle, Graphics, RenderTexture, Sprite, Texture } from "pixi.js";
 import runLoop from "./runLoop";
-import { fabric } from "fabric";
-const { Canvas, Circle, Text } = fabric;
 
 export default function runDrawLoop(time, gameState)
 {
-    const canvasElement = document.createElement("canvas");
-    document.body.appendChild(canvasElement);
+    const app = new Application({
+        width: 500,
+        height: 500,
+        antialias: true
+    });
+    document.body.appendChild(app.view);
 
-    const canvas = new Canvas(
-        canvasElement,
-        {
-            width: 500,
-            height: 500,
-            interactive: false,
-            selection: false
-        });
     runLoop(
-        (delta) => draw(delta, gameState, canvas),
+        (delta) => draw(delta, gameState, app),
         time,
         requestAnimationFrame
     );
 }
 
-function draw(delta, gameState, canvas)
+function draw(delta, gameState, app)
 {
-    let player;
-    let info;
-    if(canvas.size() > 0) {
-        player = canvas.item(0);
-        player.set({
-            left: gameState.player.position.x,
-            top: gameState.player.position.y
+    let player = app.stage.getChildByName('player');
+    if(!player)
+    {
+        const playerShape = new Graphics();
+        playerShape.beginFill(0xff0000);
+        playerShape.lineStyle(0);
+        playerShape.drawCircle(10, 10, 10);
+        playerShape.endFill();
+        const texture = RenderTexture.create({
+            width: playerShape.width,
+            height: playerShape.height
         });
+        app.renderer.render(playerShape, texture);
 
-        info = canvas.item(1);
-        info.text = `FPS: ${Math.round(1000 / delta)}`;
-    } else {
-        player = new Circle({
-            left: gameState.player.position.x,
-            top: gameState.player.position.y,
-            radius: gameState.player.radius,
-            fill: "red"
-        });
-        canvas.add(player);
-
-        info = new Text(
-            `FPS: ${Math.round(1000 / delta)}`,
-            {
-                left: 2,
-                top: 2
-            }
-        );
-        canvas.add(info);
+        player = new Sprite(texture);
+        
+        player.name = 'player';
+        app.stage.addChild(player);
     }
-    canvas.renderAndReset();
+    player.x = gameState.player.position.x - (player.width / 2);
+    player.y = gameState.player.position.y - (player.height / 2);
 }
