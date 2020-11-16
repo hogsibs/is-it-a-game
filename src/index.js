@@ -7,10 +7,9 @@ domready(startGame);
 
 function startGame()
 {
-    const currentTime = performance.now();
     const gameState = initializeGameState();
-    runUpdateLoop(currentTime, gameState);
-    runDrawLoop(currentTime, gameState);
+    runUpdateLoop(gameState);
+    runDrawLoop(gameState);
 }
 
 function initializeGameState()
@@ -31,8 +30,8 @@ function initializeGameState()
         },
         world: {
             size: {
-                width: 200,
-                height: 200
+                width: 500,
+                height: 500
             }
         }
     };

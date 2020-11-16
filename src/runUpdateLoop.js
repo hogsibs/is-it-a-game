@@ -1,10 +1,9 @@
 import runLoop from "./runLoop";
 
-export default function runUpdateLoop(time, gameState)
+export default function runUpdateLoop(gameState)
 {
     runLoop(
         (delta) => update(delta, gameState),
-        time,
         //setImmediate
         callback => setTimeout(callback, Math.round(1000 / 120))
     );

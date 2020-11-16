@@ -1,7 +1,13 @@
-export default function runLoop(callback, time, timer)
+export default function runLoop(callback, timer)
 {
-    const newTime = performance.now();
-    const delta = newTime - time;
-    callback(delta);
-    timer(() => runLoop(callback, newTime, timer));
+    start(performance.now());
+    function start(time) {
+        timer(() => doWork(time));
+    }
+    function doWork(time) {
+        const newTime = performance.now();
+        const delta = newTime - time;
+        callback(delta);
+        start(newTime);
+    }
 }

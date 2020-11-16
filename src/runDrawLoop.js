@@ -1,20 +1,14 @@
-import { Application, Circle, Graphics, RenderTexture, Sprite, Texture } from "pixi.js";
-import runLoop from "./runLoop";
+import { Application, Graphics, RenderTexture, Sprite } from "pixi.js";
 
-export default function runDrawLoop(time, gameState)
+export default function runDrawLoop(gameState)
 {
     const app = new Application({
-        width: 500,
-        height: 500,
+        width: gameState.world.size.width,
+        height: gameState.world.size.height,
         antialias: true
     });
     document.body.appendChild(app.view);
-
-    runLoop(
-        (delta) => draw(delta, gameState, app),
-        time,
-        requestAnimationFrame
-    );
+    app.ticker.add(() => draw(app.ticker.deltaMS, gameState, app));
 }
 
 function draw(delta, gameState, app)
