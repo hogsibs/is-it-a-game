@@ -21,12 +21,17 @@ function initializeGameState()
                 x: 250,
                 y: 250
             },
-            speed: 50,
-            direction: 0,
-            targetDirection: 0,
-            turnSpeed: Math.PI / 4,
-            radius: 10,
-            timeLeftInCurrentDirection: 0
+            power: 200,
+            friction: 3,
+            velocity: {
+                direction: 0,
+                magnitude: 0
+            },
+            acceleration: {
+                direction: 0,
+                magnitude: 0
+            },
+            timeLeftInCurrentDirection: 1000
         },
         world: {
             size: {
