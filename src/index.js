@@ -21,8 +21,8 @@ function initializeGameState()
                 x: 250,
                 y: 250
             },
-            power: 500,
-            friction: 3,
+            power: 600,
+            friction: 5,
             velocity: {
                 direction: 0,
                 magnitude: 0
