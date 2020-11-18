@@ -21,7 +21,7 @@ function initializeGameState()
                 x: 250,
                 y: 250
             },
-            power: 200,
+            power: 500,
             friction: 3,
             velocity: {
                 direction: 0,
@@ -30,8 +30,7 @@ function initializeGameState()
             acceleration: {
                 direction: 0,
                 magnitude: 0
-            },
-            timeLeftInCurrentDirection: 1000
+            }
         },
         world: {
             size: {

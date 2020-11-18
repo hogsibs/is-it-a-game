@@ -1,11 +1,12 @@
 import runLoop from "./runLoop";
+import controller from "./controller";
 
 export default function runUpdateLoop(gameState)
 {
     runLoop(
         (delta) => update(delta, gameState),
         //setImmediate
-        callback => setTimeout(callback, Math.round(1000 / 120))
+        callback => setTimeout(callback, Math.round(1000 / 200))
     );
 }
 
@@ -51,16 +52,31 @@ function update(delta, gameState)
         (delta / 1000) *
         gameState.player.velocity.magnitude;
     
-    gameState.player.timeLeftInCurrentDirection -= delta;
-    if(gameState.player.timeLeftInCurrentDirection <= 0)
-    {
-        gameState.player.timeLeftInCurrentDirection = Math.random() * 2000 + 1000;
-        if(Math.random() < 0.2)
-        {
-            gameState.player.acceleration.magnitude = 0;
+    if(controller.up && !controller.down) {
+        if(controller.right && !controller.left) {
+            gameState.player.acceleration.direction = Math.PI / -4;
+        } else if (controller.left && !controller.right) {
+            gameState.player.acceleration.direction = 3 * Math.PI / -4;
         } else {
-            gameState.player.acceleration.magnitude = gameState.player.power;
-            gameState.player.acceleration.direction = Math.random() * 2 * Math.PI;
+            gameState.player.acceleration.direction = Math.PI / -2;
         }
+        gameState.player.acceleration.magnitude = gameState.player.power;
+    } else if(!controller.up && controller.down) {
+        if(controller.right && !controller.left) {
+            gameState.player.acceleration.direction = Math.PI / 4;
+        } else if (controller.left && !controller.right) {
+            gameState.player.acceleration.direction = 3 * Math.PI / 4;
+        } else {
+            gameState.player.acceleration.direction = Math.PI / 2;
+        }
+        gameState.player.acceleration.magnitude = gameState.player.power;
+    } else if(controller.right && !controller.left) {
+        gameState.player.acceleration.direction = 0;
+        gameState.player.acceleration.magnitude = gameState.player.power;
+    } else if(!controller.right && controller.left) {
+        gameState.player.acceleration.direction = Math.PI;
+        gameState.player.acceleration.magnitude = gameState.player.power;
+    } else {
+        gameState.player.acceleration.magnitude = 0;
     }
 }
