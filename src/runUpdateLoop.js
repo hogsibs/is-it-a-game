@@ -15,37 +15,7 @@ function update(delta, gameState)
 {
     gameState.time = performance.now();
 
-    const velocityX = gameState.player.velocity.magnitude *
-        Math.cos(gameState.player.velocity.direction);
-    const velocityY = gameState.player.velocity.magnitude *
-        Math.sin(gameState.player.velocity.direction);
-    const accelerationX = gameState.player.acceleration.magnitude *
-        Math.cos(gameState.player.acceleration.direction) *
-        (delta / 1000);
-    const accelerationY = gameState.player.acceleration.magnitude *
-        Math.sin(gameState.player.acceleration.direction) *
-        (delta / 1000);
-    const frictionX = -1 * velocityX * gameState.player.friction * (delta / 1000);
-    const frictionY = -1 * velocityY * gameState.player.friction * (delta / 1000);
-    const newVelocityX = velocityX + accelerationX + frictionX;
-    const newVelocityY = velocityY + accelerationY + frictionY;
-    gameState.player.velocity.magnitude =
-        Math.sqrt(
-            Math.pow(newVelocityX, 2) +
-            Math.pow(newVelocityY, 2));
-    if(newVelocityX !== 0 || newVelocityY !== 0)
-    {
-        if(newVelocityX === 0)
-        {
-            if(newVelocityY > 0) {
-                gameState.player.velocity.direction = Math.PI / 2;
-            } else {
-                gameState.player.velocity.direction = Math.PI / -2;
-            }
-        } else {
-            gameState.player.velocity.direction = Math.atan2(newVelocityY, newVelocityX);
-        }
-    }
+    gameState.player.update(delta);
 
     if(gameState.player.velocity.magnitude <= velocityThreshold)
     {
@@ -53,15 +23,6 @@ function update(delta, gameState)
     } else {
         gameState.player.timeSpentWalking = (gameState.player.timeSpentWalking + delta) % 1000;
     }
-    
-    gameState.player.position.x +=
-        Math.cos(gameState.player.velocity.direction) *
-        (delta / 1000) *
-        gameState.player.velocity.magnitude;
-    gameState.player.position.y +=
-        Math.sin(gameState.player.velocity.direction) *
-        (delta / 1000) *
-        gameState.player.velocity.magnitude;
     
     if(gameState.player.position.x < 64) {
         gameState.player.position.x = 64;
@@ -102,3 +63,4 @@ function update(delta, gameState)
         gameState.player.acceleration.magnitude = 0;
     }
 }
+
