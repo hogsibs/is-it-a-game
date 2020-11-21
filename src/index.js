@@ -21,10 +21,10 @@ function initializeGameState()
                 x: 112,
                 y: 160
             },
-            power: 800,
-            friction: 10,
+            power: 1200,
+            friction: 20,
             velocity: {
-                direction: Math.PI / 2,
+                direction: Math.PI / -2,
                 magnitude: 0
             },
             acceleration: {

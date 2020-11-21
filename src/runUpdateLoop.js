@@ -1,7 +1,7 @@
 import runLoop from "./runLoop";
 import controller from "./controller";
 
-const velocityThreshold = 40;
+const velocityThreshold = 20;
 
 export default function runUpdateLoop(gameState)
 {
