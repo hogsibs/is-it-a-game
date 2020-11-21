@@ -1,11 +1,12 @@
 import runLoop from "./runLoop";
 import controller from "./controller";
 
+const velocityThreshold = 40;
+
 export default function runUpdateLoop(gameState)
 {
     runLoop(
         (delta) => update(delta, gameState),
-        //setImmediate
         callback => setTimeout(callback, Math.round(1000 / 200))
     );
 }
@@ -32,15 +33,25 @@ function update(delta, gameState)
         Math.sqrt(
             Math.pow(newVelocityX, 2) +
             Math.pow(newVelocityY, 2));
-    if(newVelocityX === 0)
+    if(newVelocityX !== 0 || newVelocityY !== 0)
     {
-        if(newVelocityY > 0) {
-            gameState.player.velocity.direction = Math.PI / 2;
+        if(newVelocityX === 0)
+        {
+            if(newVelocityY > 0) {
+                gameState.player.velocity.direction = Math.PI / 2;
+            } else {
+                gameState.player.velocity.direction = Math.PI / -2;
+            }
         } else {
-            gameState.player.velocity.direction = Math.PI / -2;
+            gameState.player.velocity.direction = Math.atan2(newVelocityY, newVelocityX);
         }
+    }
+
+    if(gameState.player.velocity.magnitude <= velocityThreshold)
+    {
+        gameState.player.timeSpentWalking = 0;
     } else {
-        gameState.player.velocity.direction = Math.atan2(newVelocityY, newVelocityX);
+        gameState.player.timeSpentWalking = (gameState.player.timeSpentWalking + delta) % 1000;
     }
     
     gameState.player.position.x +=
@@ -51,6 +62,17 @@ function update(delta, gameState)
         Math.sin(gameState.player.velocity.direction) *
         (delta / 1000) *
         gameState.player.velocity.magnitude;
+    
+    if(gameState.player.position.x < 64) {
+        gameState.player.position.x = 64;
+    } else if(gameState.player.position.x > 178) {
+        gameState.player.position.x = 178;
+    }
+    if(gameState.player.position.y < 64) {
+        gameState.player.position.y = 64;
+    } else if(gameState.player.position.y > 176) {
+        gameState.player.position.y = 176;
+    }
     
     if(controller.up && !controller.down) {
         if(controller.right && !controller.left) {

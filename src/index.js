@@ -1,7 +1,7 @@
-import "setImmediate";
 import domready from "domready";
 import runDrawLoop from "./runDrawLoop";
 import runUpdateLoop from "./runUpdateLoop";
+import "./style.css";
 
 domready(startGame);
 
@@ -18,24 +18,25 @@ function initializeGameState()
         time: performance.now(),
         player: {
             position: {
-                x: 250,
-                y: 250
+                x: 112,
+                y: 160
             },
-            power: 600,
-            friction: 5,
+            power: 800,
+            friction: 10,
             velocity: {
-                direction: 0,
+                direction: Math.PI / 2,
                 magnitude: 0
             },
             acceleration: {
                 direction: 0,
                 magnitude: 0
-            }
+            },
+            timeSpentWalking: 0
         },
         world: {
             size: {
-                width: 500,
-                height: 500
+                width: 256,
+                height: 256
             }
         }
     };
