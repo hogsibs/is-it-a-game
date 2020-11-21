@@ -1,6 +1,7 @@
 import domready from "domready";
 import runDrawLoop from "./runDrawLoop";
 import runUpdateLoop from "./runUpdateLoop";
+import controller from "./controller";
 import "./style.css";
 
 domready(startGame);
@@ -36,14 +37,12 @@ function buildPlayer() {
     const friction = frictionComponent(20, velocity);
 
     return {
-        power: 1200,
-        friction,
         timeSpentWalking: 0,
-        acceleration,
-        velocity,
         position,
+        velocity,
         components: [
             friction,
+            playerControlledComponent(1200, controller, acceleration),
             acceleration,
             velocity
         ],
@@ -99,6 +98,41 @@ function accelerationComponent(direction, magnitude, velocity) {
                         velocity.direction = Math.atan2(newVelocityY, newVelocityX);
                     }
                 }
+            }
+        }
+    };
+}
+
+function playerControlledComponent(power, controller, acceleration) {
+    return {
+        power,
+        update() {
+            if(controller.up && !controller.down) {
+                if(controller.right && !controller.left) {
+                    acceleration.direction = Math.PI / -4;
+                } else if (controller.left && !controller.right) {
+                    acceleration.direction = 3 * Math.PI / -4;
+                } else {
+                    acceleration.direction = Math.PI / -2;
+                }
+                acceleration.magnitude = this.power;
+            } else if(!controller.up && controller.down) {
+                if(controller.right && !controller.left) {
+                    acceleration.direction = Math.PI / 4;
+                } else if (controller.left && !controller.right) {
+                    acceleration.direction = 3 * Math.PI / 4;
+                } else {
+                    acceleration.direction = Math.PI / 2;
+                }
+                acceleration.magnitude = this.power;
+            } else if(controller.right && !controller.left) {
+                acceleration.direction = 0;
+                acceleration.magnitude = this.power;
+            } else if(!controller.right && controller.left) {
+                acceleration.direction = Math.PI;
+                acceleration.magnitude = this.power;
+            } else {
+                acceleration.magnitude = 0;
             }
         }
     };

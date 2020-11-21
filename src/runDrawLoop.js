@@ -73,7 +73,6 @@ function draw(delta, gameState, app)
     if(targetFrameY !== player.texture.frame.y ||
         targetFrameX !== player.texture.frame.x)
     {
-        console.log(targetFrameX);
         player.texture.frame.y = targetFrameY;
         player.texture.frame.x = targetFrameX;
         player.texture.update();

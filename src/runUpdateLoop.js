@@ -34,33 +34,5 @@ function update(delta, gameState)
     } else if(gameState.player.position.y > 176) {
         gameState.player.position.y = 176;
     }
-    
-    if(controller.up && !controller.down) {
-        if(controller.right && !controller.left) {
-            gameState.player.acceleration.direction = Math.PI / -4;
-        } else if (controller.left && !controller.right) {
-            gameState.player.acceleration.direction = 3 * Math.PI / -4;
-        } else {
-            gameState.player.acceleration.direction = Math.PI / -2;
-        }
-        gameState.player.acceleration.magnitude = gameState.player.power;
-    } else if(!controller.up && controller.down) {
-        if(controller.right && !controller.left) {
-            gameState.player.acceleration.direction = Math.PI / 4;
-        } else if (controller.left && !controller.right) {
-            gameState.player.acceleration.direction = 3 * Math.PI / 4;
-        } else {
-            gameState.player.acceleration.direction = Math.PI / 2;
-        }
-        gameState.player.acceleration.magnitude = gameState.player.power;
-    } else if(controller.right && !controller.left) {
-        gameState.player.acceleration.direction = 0;
-        gameState.player.acceleration.magnitude = gameState.player.power;
-    } else if(!controller.right && controller.left) {
-        gameState.player.acceleration.direction = Math.PI;
-        gameState.player.acceleration.magnitude = gameState.player.power;
-    } else {
-        gameState.player.acceleration.magnitude = 0;
-    }
 }
 
