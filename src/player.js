@@ -45,25 +45,84 @@ function velocityComponent(direction, magnitude, position, size, world) {
         magnitude,
         update(delta) {
             const newX = position.x + Math.cos(this.direction)* this.magnitude * (delta / 1000);
+            const newY = position.y + Math.sin(this.direction) * this.magnitude * (delta / 1000);
 
             if(newX < world.bounds.left)
             {
                 position.x = world.bounds.left;
             } else if(newX + size.width > world.bounds.right) {
                 position.x = world.bounds.right - size.width;
-            } else {
-                position.x = newX;
+            } else if(newX < position.x) {
+                position.x = Math.max(
+                    newX,
+                    ...world.solids.map(
+                        solid => {
+                            if(position.x >= solid.x + solid.width &&
+                                newX < solid.x + solid.width &&
+                                newY + size.height > solid.y &&
+                                newY < solid.y + solid.height) {
+                                return solid.x + solid.width;
+                            } else {
+                                return null;
+                            }
+                        }
+                    )
+                );
+            } else if(newX > position.x) {
+                position.x = Math.min(
+                    newX,
+                    ...world.solids.map(
+                        solid => {
+                            if(position.x + size.width <= solid.x &&
+                                newX + size.width > solid.x &&
+                                newY + size.height > solid.y &&
+                                newY < solid.y + solid.height) {
+                                return solid.x - size.width;
+                            } else {
+                                return null;
+                            }
+                        }
+                    ).filter(x => x !== null)
+                );
             }
-
-            const newY = position.y + Math.sin(this.direction) * this.magnitude * (delta / 1000);
 
             if(newY < world.bounds.top)
             {
                 position.y = world.bounds.top;
             } else if(newY + size.height > world.bounds.bottom) {
                 position.y = world.bounds.bottom - size.height;
-            } else {
-                position.y = newY;
+            } else if(newY < position.y) {
+                position.y = Math.max(
+                    newY,
+                    ...world.solids.map(
+                        solid => {
+                            if(position.y >= solid.y + solid.height &&
+                                newY < solid.y + solid.height &&
+                                position.x + size.width > solid.x &&
+                                position.x < solid.x + solid.width) {
+                                return solid.y + solid.height;
+                            } else {
+                                return null;
+                            }
+                        }
+                    )
+                );
+            } else if(newY > position.y) {
+                position.y = Math.min(
+                    newY,
+                    ...world.solids.map(
+                        solid => {
+                            if(position.y + size.height <= solid.y &&
+                                newY + size.height > solid.y &&
+                                position.x + size.width > solid.x &&
+                                position.x < solid.x + solid.width) {
+                                return solid.y - size.height;
+                            } else {
+                                return null;
+                            }
+                        }
+                    ).filter(y => y !== null)
+                );
             }
         }
     };
