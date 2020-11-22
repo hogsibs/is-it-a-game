@@ -53,7 +53,6 @@ function registerPreciseMovement(downEvent, upEvent, moveEvent, eventPositionRes
         const position = eventPositionResolver(event);
         controller.mouse.x = (position.x - appPosition.x) * scale;
         controller.mouse.y = (position.y - appPosition.y) * scale;
-        console.log(`${controller.mouse.x}, ${controller.mouse.y}`);
     });
 
 }
