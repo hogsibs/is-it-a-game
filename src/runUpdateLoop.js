@@ -23,16 +23,5 @@ function update(delta, gameState)
     } else {
         gameState.player.timeSpentWalking = (gameState.player.timeSpentWalking + delta) % 1000;
     }
-    
-    if(gameState.player.position.x < 64) {
-        gameState.player.position.x = 64;
-    } else if(gameState.player.position.x > 178) {
-        gameState.player.position.x = 178;
-    }
-    if(gameState.player.position.y < 64) {
-        gameState.player.position.y = 64;
-    } else if(gameState.player.position.y > 176) {
-        gameState.player.position.y = 176;
-    }
 }
 

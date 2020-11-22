@@ -3,6 +3,7 @@ import runDrawLoop from "./runDrawLoop";
 import runUpdateLoop from "./runUpdateLoop";
 import { buildPlayer } from "./player";
 import "./style.css";
+import { buildWorld } from "./world";
 
 domready(startGame);
 
@@ -15,14 +16,12 @@ function startGame()
 
 function initializeGameState()
 {
+    const world = buildWorld();
+    const player = buildPlayer(world);
+    
     return {
         time: performance.now(),
-        player: buildPlayer(),
-        world: {
-            size: {
-                width: 256,
-                height: 256
-            }
-        }
+        player,
+        world
     };
 }

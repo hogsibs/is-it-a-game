@@ -1,16 +1,21 @@
 import controller from "./controller";
 
-export function buildPlayer() {
+export function buildPlayer(world) {
     const position = {
         x: 112,
         y: 160
     };
-    const velocity = velocityComponent(Math.PI / -2, 0, position);
+    const size = {
+        width: 14,
+        height: 16
+    };
+    const velocity = velocityComponent(Math.PI / -2, 0, position, size, world);
     const acceleration = accelerationComponent(0, 0, velocity);
     const friction = frictionComponent(20, velocity);
 
     return {
         timeSpentWalking: 0,
+        size,
         position,
         velocity,
         components: [
@@ -34,13 +39,32 @@ function frictionComponent(magnitude, velocity) {
     }
 }
 
-function velocityComponent(direction, magnitude, position) {
+function velocityComponent(direction, magnitude, position, size, world) {
     return {
         direction,
         magnitude,
         update(delta) {
-            position.x += Math.cos(this.direction)* this.magnitude * (delta / 1000);
-            position.y += Math.sin(this.direction) * this.magnitude * (delta / 1000);
+            const newX = position.x + Math.cos(this.direction)* this.magnitude * (delta / 1000);
+
+            if(newX < world.bounds.left)
+            {
+                position.x = world.bounds.left;
+            } else if(newX + size.width > world.bounds.right) {
+                position.x = world.bounds.right - size.width;
+            } else {
+                position.x = newX;
+            }
+
+            const newY = position.y + Math.sin(this.direction) * this.magnitude * (delta / 1000);
+
+            if(newY < world.bounds.top)
+            {
+                position.y = world.bounds.top;
+            } else if(newY + size.height > world.bounds.bottom) {
+                position.y = world.bounds.bottom - size.height;
+            } else {
+                position.y = newY;
+            }
         }
     };
 }
