@@ -2,6 +2,7 @@ import { Application, Sprite, Rectangle, settings, SCALE_MODES } from "pixi.js";
 import red from "./sprites/red.png";
 import bedroom from "./sprites/bedroom.png";
 import resize from "./resize";
+import { setPosition } from "./controller";
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
@@ -13,12 +14,18 @@ export default function runDrawLoop(gameState)
         antialias: true,
     });
     resize(app);
-    window.addEventListener("resize", () => resize(app));
+    window.addEventListener("resize", () => {
+        resize(app);
+        const rect = app.view.getBoundingClientRect();
+        setPosition(rect.left, rect.top);
+    });
     app.loader
         .add(red)
         .add(bedroom)
         .load(() => {
             document.body.appendChild(app.view);
+            const rect = app.view.getBoundingClientRect();
+            setPosition(rect.left, rect.top);
             app.ticker.add(() => draw(app.ticker.deltaMS, gameState, app));
         }
     );

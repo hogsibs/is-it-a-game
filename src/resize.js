@@ -1,3 +1,5 @@
+import { setScale } from "./controller";
+
 const resolution = {
     width: 256,
     height: 256
@@ -17,6 +19,7 @@ export default function resize(app) {
         newGameHeight = (newGameWidth * resolution.height) / resolution.width;
     }
     
+    setScale(resolution.width / newGameWidth);
     app.renderer.resize(newGameWidth, newGameHeight);
     app.stage.scale.set(newGameWidth / resolution.width, newGameHeight / resolution.height);
 }

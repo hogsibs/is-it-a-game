@@ -20,7 +20,7 @@ export function buildPlayer(world) {
         velocity,
         components: [
             friction,
-            playerControlledComponent(1200, controller, acceleration),
+            playerControlledComponent(1200, controller, acceleration, position, size),
             acceleration,
             velocity
         ],
@@ -159,11 +159,25 @@ function accelerationComponent(direction, magnitude, velocity) {
     };
 }
 
-function playerControlledComponent(power, controller, acceleration) {
+function playerControlledComponent(power, controller, acceleration, position, size) {
     return {
         power,
         update() {
-            if(controller.up && !controller.down) {
+            if(controller.mouse.down) {
+                const yDelta = controller.mouse.y - (position.y + size.height / 2);
+                const xDelta = controller.mouse.x - (position.x + size.width / 2);
+                const distance = Math.sqrt(Math.pow(xDelta, 2) + Math.pow(yDelta, 2));
+                if(distance > 1)
+                {
+                    acceleration.direction = Math.atan2(
+                        controller.mouse.y - (position.y + size.height / 2),
+                        controller.mouse.x - (position.x + size.width / 2)
+                    );
+                    acceleration.magnitude = Math.min(distance * 100, this.power);
+                } else {
+                    acceleration.magnitude = 0;
+                }
+            } else if(controller.up && !controller.down) {
                 if(controller.right && !controller.left) {
                     acceleration.direction = Math.PI / -4;
                 } else if (controller.left && !controller.right) {
