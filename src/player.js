@@ -15,8 +15,8 @@ export function buildPlayer() {
     const acceleration = accelerationComponent(cartesianVector(0, 0), velocity);
     const friction = frictionComponent(20, velocity);
 
-    const direction = playerDirectionComponent(velocity);
     const timeSpentWalking = timeSpentWalkingComponent(20, velocity);
+    const direction = playerDirectionComponent(timeSpentWalking, velocity);
 
     return {
         timeSpentWalking: 0,
@@ -28,8 +28,8 @@ export function buildPlayer() {
             playerControlledComponent(1200, controller, acceleration),
             acceleration,
             velocity,
-            direction,
-            timeSpentWalking
+            timeSpentWalking,
+            direction
         ],
         update(delta) {
             this.components.forEach(component => component.update(delta));
@@ -92,28 +92,27 @@ function playerControlledComponent(power, controller, acceleration) {
     };
 }
 
-function playerDirectionComponent(velocity) {
+function playerDirectionComponent(timeSpentWalking, velocity) {
     return {
-        vertical: 1,
-        horizontal: 0,
+        direction: "down",
         update() {
-            const { x, y } = velocity.vector.getCartesian();
-            if (isZero(x)) {
-                this.horizontal = 0;
+            if (timeSpentWalking.timeSpentWalking == 0) {
+                this.direction = "down";
             }
             else {
-                this.horizontal = Math.sign(x);
-            }
-            if (isZero(y)) {
-                if (this.horizontal == 0) {
-                    this.vertical = 1;
+                const { angle } = velocity.vector.getEuclidean();
+                if(angle > Math.PI / -4 && angle <= Math.PI / 4)
+                {
+                    this.direction = "right";
+                } else if(angle > Math.PI / 4 && angle <= Math.PI * 3 / 4)
+                {
+                    this.direction = "down";
+                } else if(angle > Math.PI * 3 / 4 || angle <= Math.PI * -3 / 4)
+                {
+                    this.direction = "left";
+                } else {
+                    this.direction = "up";
                 }
-                else {
-                    this.vertical = 0;
-                }
-            }
-            else {
-                this.vertical = Math.sign(y);
             }
         }
     }

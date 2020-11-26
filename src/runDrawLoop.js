@@ -45,18 +45,20 @@ function draw(delta, gameState, app)
         app.stage.addChild(player);
     }
     let targetFrameY;
-    console.log(gameState.player.direction);
-    if(gameState.player.direction.horizontal == 1)
-    {
-        targetFrameY = 32;
-    } else if(gameState.player.direction.vertical == 1)
-    {
-        targetFrameY = 0;
-    } else if(gameState.player.direction.horizontal == -1)
-    {
-        targetFrameY = 16;
-    } else {
-        targetFrameY = 48;
+    console.log(gameState.player.direction.direction);
+    switch (gameState.player.direction.direction) {
+        case "down":
+            targetFrameY = 0;
+            break;
+        case "left":
+            targetFrameY = 16;
+            break;
+        case "right":
+            targetFrameY = 32;
+            break;
+        case "up":
+            targetFrameY = 48;
+            break;
     }
 
     const walkingAnimation = [28, 14, 0, 14];
