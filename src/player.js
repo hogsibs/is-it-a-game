@@ -1,11 +1,6 @@
 import controller from "./controller";
 import { cartesianVector, setMagnitude } from "./vector";
 
-const zeroThreshold = 1;
-function isZero(value) {
-    return Math.abs(value) < zeroThreshold;
-}
-
 export function buildPlayer() {
     const position = {
         x: 112,
