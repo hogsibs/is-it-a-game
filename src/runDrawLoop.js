@@ -45,19 +45,14 @@ function draw(delta, gameState, app)
         app.stage.addChild(player);
     }
     let targetFrameY;
-    if(
-        gameState.player.velocity.direction > Math.PI / -4 &&
-        gameState.player.velocity.direction <= Math.PI / 4)
+    console.log(gameState.player.direction);
+    if(gameState.player.direction.horizontal == 1)
     {
         targetFrameY = 32;
-    } else if(
-        gameState.player.velocity.direction > Math.PI / 4 &&
-        gameState.player.velocity.direction <= Math.PI * 3 / 4)
+    } else if(gameState.player.direction.vertical == 1)
     {
         targetFrameY = 0;
-    } else if(
-        gameState.player.velocity.direction > Math.PI * 3 / 4 ||
-        gameState.player.velocity.direction <= Math.PI * -3 / 4)
+    } else if(gameState.player.direction.horizontal == -1)
     {
         targetFrameY = 16;
     } else {
@@ -67,7 +62,7 @@ function draw(delta, gameState, app)
     const walkingAnimation = [28, 14, 0, 14];
     let targetFrameX = walkingAnimation[
         Math.floor(
-            ((gameState.player.timeSpentWalking + 950) % 1000) / 250
+            ((gameState.player.timeSpentWalking.timeSpentWalking + 950) % 1000) / 250
         )
     ];
     if(targetFrameY !== player.texture.frame.y ||

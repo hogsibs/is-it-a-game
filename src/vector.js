@@ -1,12 +1,12 @@
 export function cartesianVector(x, y) {
     const vector = new LazyVector();
-    vector.setCartesian(x, y);
+    vector.setCartesian({ x, y });
     return vector;
 }
 
 export function euclideanVector(angle, magnitude) {
     const vector = new LazyVector();
-    vector.setEuclidean(angle, magnitude);
+    vector.setEuclidean({ angle, magnitude });
     return vector;
 }
 

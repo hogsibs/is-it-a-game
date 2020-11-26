@@ -1,24 +1,35 @@
 import controller from "./controller";
 import { cartesianVector, setMagnitude } from "./vector";
 
+const zeroThreshold = 1;
+function isZero(value) {
+    return Math.abs(value) < zeroThreshold;
+}
+
 export function buildPlayer() {
     const position = {
         x: 112,
         y: 160
     };
-    const velocity = velocityComponent(Math.PI / -2, 0, position);
+    const velocity = velocityComponent(cartesianVector(0, 0), position);
     const acceleration = accelerationComponent(cartesianVector(0, 0), velocity);
     const friction = frictionComponent(20, velocity);
+
+    const direction = playerDirectionComponent(velocity);
+    const timeSpentWalking = timeSpentWalkingComponent(20, velocity);
 
     return {
         timeSpentWalking: 0,
         position,
-        velocity,
+        direction,
+        timeSpentWalking,
         components: [
             friction,
             playerControlledComponent(1200, controller, acceleration),
             acceleration,
-            velocity
+            velocity,
+            direction,
+            timeSpentWalking
         ],
         update(delta) {
             this.components.forEach(component => component.update(delta));
@@ -30,18 +41,20 @@ function frictionComponent(magnitude, velocity) {
     return {
         magnitude,
         update(delta) {
-            velocity.magnitude -= velocity.magnitude * this.magnitude * (delta / 1000);
+            const { magnitude: velocityMagnitude } = velocity.vector.getEuclidean();
+            setMagnitude(velocity.vector, velocityMagnitude - velocityMagnitude * this.magnitude * (delta / 1000));
         }
     }
 }
 
-function velocityComponent(direction, magnitude, position) {
+function velocityComponent(vector, position) {
+    console.log(vector.getCartesian());
     return {
-        direction,
-        magnitude,
+        vector,
         update(delta) {
-            position.x += Math.cos(this.direction)* this.magnitude * (delta / 1000);
-            position.y += Math.sin(this.direction) * this.magnitude * (delta / 1000);
+            const { x, y } = this.vector.getCartesian();
+            position.x += x * (delta / 1000);
+            position.y += y * (delta / 1000);
         }
     };
 }
@@ -50,29 +63,13 @@ function accelerationComponent(vector, velocity) {
     return {
         vector,
         update(delta) {
-            const {magnitude} = this.vector.getEuclidean();
+            const { magnitude } = this.vector.getEuclidean();
             if (magnitude > 0) {
-                const velocityX = velocity.magnitude * Math.cos(velocity.direction);
-                const velocityY = velocity.magnitude * Math.sin(velocity.direction);
-                const {x, y} = this.vector.getCartesian();
-                const accelerationX = x * (delta / 1000);
-                const accelerationY = y * (delta / 1000);
-                const newVelocityX = velocityX + accelerationX;
-                const newVelocityY = velocityY + accelerationY;
-                velocity.magnitude = Math.sqrt(Math.pow(newVelocityX, 2) + Math.pow(newVelocityY, 2));
-                if(newVelocityX !== 0 || newVelocityY !== 0)
-                {
-                    if(newVelocityX === 0)
-                    {
-                        if(newVelocityY > 0) {
-                            velocity.direction = Math.PI / 2;
-                        } else {
-                            velocity.direction = Math.PI / -2;
-                        }
-                    } else {
-                        velocity.direction = Math.atan2(newVelocityY, newVelocityX);
-                    }
-                }
+                const cartesianVelocity = velocity.vector.getCartesian();
+                const { x, y } = this.vector.getCartesian();
+                cartesianVelocity.x += x * (delta / 1000);
+                cartesianVelocity.y += y * (delta / 1000);
+                velocity.vector.setCartesian(cartesianVelocity);
             }
         }
     };
@@ -93,4 +90,46 @@ function playerControlledComponent(power, controller, acceleration) {
             }
         }
     };
+}
+
+function playerDirectionComponent(velocity) {
+    return {
+        vertical: 1,
+        horizontal: 0,
+        update() {
+            const { x, y } = velocity.vector.getCartesian();
+            if (isZero(x)) {
+                this.horizontal = 0;
+            }
+            else {
+                this.horizontal = Math.sign(x);
+            }
+            if (isZero(y)) {
+                if (this.horizontal == 0) {
+                    this.vertical = 1;
+                }
+                else {
+                    this.vertical = 0;
+                }
+            }
+            else {
+                this.vertical = Math.sign(y);
+            }
+        }
+    }
+}
+
+function timeSpentWalkingComponent(threshold, velocity) {
+    return {
+        threshold,
+        timeSpentWalking: 0,
+        update(delta) {
+            const { magnitude } = velocity.vector.getEuclidean();
+            if (magnitude <= this.threshold) {
+                this.timeSpentWalking = 0;
+            } else {
+                this.timeSpentWalking = (this.timeSpentWalking + delta) % 1000;
+            }
+        }
+    }
 }
