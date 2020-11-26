@@ -45,7 +45,6 @@ function draw(delta, gameState, app)
         app.stage.addChild(player);
     }
     let targetFrameY;
-    console.log(gameState.player.direction.direction);
     switch (gameState.player.direction.direction) {
         case "down":
             targetFrameY = 0;

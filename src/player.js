@@ -11,7 +11,7 @@ export function buildPlayer() {
     const friction = frictionComponent(20, velocity);
 
     const timeSpentWalking = timeSpentWalkingComponent(20, velocity);
-    const direction = playerDirectionComponent(timeSpentWalking, velocity);
+    const direction = playerDirectionComponent(velocity);
 
     return {
         timeSpentWalking: 0,
@@ -43,7 +43,6 @@ function frictionComponent(magnitude, velocity) {
 }
 
 function velocityComponent(vector, position) {
-    console.log(vector.getCartesian());
     return {
         vector,
         update(delta) {
@@ -87,23 +86,17 @@ function playerControlledComponent(power, controller, acceleration) {
     };
 }
 
-function playerDirectionComponent(timeSpentWalking, velocity) {
+function playerDirectionComponent(velocity) {
     return {
         direction: "down",
         update() {
-            if (timeSpentWalking.timeSpentWalking == 0) {
-                this.direction = "down";
-            }
-            else {
-                const { angle } = velocity.vector.getEuclidean();
-                if(angle > Math.PI / -4 && angle <= Math.PI / 4)
-                {
+            const { magnitude, angle } = velocity.vector.getEuclidean();
+            if (magnitude > 1) {
+                if (angle > Math.PI / -4 && angle <= Math.PI / 4) {
                     this.direction = "right";
-                } else if(angle > Math.PI / 4 && angle <= Math.PI * 3 / 4)
-                {
+                } else if (angle > Math.PI / 4 && angle <= Math.PI * 3 / 4) {
                     this.direction = "down";
-                } else if(angle > Math.PI * 3 / 4 || angle <= Math.PI * -3 / 4)
-                {
+                } else if (angle > Math.PI * 3 / 4 || angle <= Math.PI * -3 / 4) {
                     this.direction = "left";
                 } else {
                     this.direction = "up";
