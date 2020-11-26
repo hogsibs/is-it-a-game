@@ -1,4 +1,5 @@
 import controller from "./controller";
+import playerSprite from "./playerSprite";
 import { cartesianVector, setMagnitude } from "./vector";
 
 export function buildPlayer() {
@@ -14,20 +15,23 @@ export function buildPlayer() {
     const direction = playerDirectionComponent(velocity);
 
     return {
-        timeSpentWalking: 0,
         position,
-        direction,
-        timeSpentWalking,
         components: [
-            friction,
             playerControlledComponent(1200, controller, acceleration),
             acceleration,
+            friction,
             velocity,
             timeSpentWalking,
             direction
         ],
+        drawables: [
+            playerSprite(direction, timeSpentWalking, position)
+        ],
         update(delta) {
             this.components.forEach(component => component.update(delta));
+        },
+        draw(delta, app) {
+            this.drawables.forEach(drawable => drawable.draw(delta, app));
         }
     }
 }
