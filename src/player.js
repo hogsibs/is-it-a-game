@@ -1,4 +1,5 @@
 import controller from "./controller";
+import { cartesianVector, setMagnitude } from "./vector";
 
 export function buildPlayer() {
     const position = {
@@ -6,7 +7,7 @@ export function buildPlayer() {
         y: 160
     };
     const velocity = velocityComponent(Math.PI / -2, 0, position);
-    const acceleration = accelerationComponent(0, 0, velocity);
+    const acceleration = accelerationComponent(cartesianVector(0, 0), velocity);
     const friction = frictionComponent(20, velocity);
 
     return {
@@ -45,16 +46,17 @@ function velocityComponent(direction, magnitude, position) {
     };
 }
 
-function accelerationComponent(direction, magnitude, velocity) {
+function accelerationComponent(vector, velocity) {
     return {
-        direction,
-        magnitude,
+        vector,
         update(delta) {
-            if (this.magnitude > 0) {
+            const {magnitude} = this.vector.getEuclidean();
+            if (magnitude > 0) {
                 const velocityX = velocity.magnitude * Math.cos(velocity.direction);
                 const velocityY = velocity.magnitude * Math.sin(velocity.direction);
-                const accelerationX = this.magnitude * Math.cos(this.direction) * (delta / 1000);
-                const accelerationY = this.magnitude * Math.sin(this.direction) * (delta / 1000);
+                const {x, y} = this.vector.getCartesian();
+                const accelerationX = x * (delta / 1000);
+                const accelerationY = y * (delta / 1000);
                 const newVelocityX = velocityX + accelerationX;
                 const newVelocityY = velocityY + accelerationY;
                 velocity.magnitude = Math.sqrt(Math.pow(newVelocityX, 2) + Math.pow(newVelocityY, 2));
@@ -80,32 +82,14 @@ function playerControlledComponent(power, controller, acceleration) {
     return {
         power,
         update() {
-            if(controller.up && !controller.down) {
-                if(controller.right && !controller.left) {
-                    acceleration.direction = Math.PI / -4;
-                } else if (controller.left && !controller.right) {
-                    acceleration.direction = 3 * Math.PI / -4;
-                } else {
-                    acceleration.direction = Math.PI / -2;
-                }
-                acceleration.magnitude = this.power;
-            } else if(!controller.up && controller.down) {
-                if(controller.right && !controller.left) {
-                    acceleration.direction = Math.PI / 4;
-                } else if (controller.left && !controller.right) {
-                    acceleration.direction = 3 * Math.PI / 4;
-                } else {
-                    acceleration.direction = Math.PI / 2;
-                }
-                acceleration.magnitude = this.power;
-            } else if(controller.right && !controller.left) {
-                acceleration.direction = 0;
-                acceleration.magnitude = this.power;
-            } else if(!controller.right && controller.left) {
-                acceleration.direction = Math.PI;
-                acceleration.magnitude = this.power;
-            } else {
-                acceleration.magnitude = 0;
+            const vertical = controller.down - controller.up;
+            const horizontal = controller.right - controller.left;
+            if (!vertical && !horizontal) {
+                acceleration.vector.setCartesian({ x: 0, y: 0 });
+            }
+            else {
+                acceleration.vector.setCartesian({ x: horizontal, y: vertical });
+                setMagnitude(acceleration.vector, this.power);
             }
         }
     };
