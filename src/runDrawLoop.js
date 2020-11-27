@@ -1,19 +1,11 @@
-import { Application, Sprite, settings, SCALE_MODES } from "pixi.js";
+import { Sprite, settings, SCALE_MODES } from "pixi.js";
 import red from "./sprites/red.png";
 import bedroom from "./sprites/bedroom.png";
-import resize from "./resize";
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST;
 
-export default function runDrawLoop(gameState)
+export default function runDrawLoop(app, gameState)
 {
-    const app = new Application({
-        width: gameState.world.size.width,
-        height: gameState.world.size.height,
-        antialias: true,
-    });
-    resize(app);
-    window.addEventListener("resize", () => resize(app));
     app.loader
         .add(red)
         .add(bedroom)
