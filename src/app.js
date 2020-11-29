@@ -1,9 +1,22 @@
+import { Application } from "pixi.js";
+
+export function buildApp(size)
+{
+    const app = new Application({
+        width: size.width,
+        height: size.height,
+        antialias: true,
+    });
+    resize(app);
+    window.addEventListener("resize", () => resize(app));
+    return app;
+}
 const resolution = {
     width: 256,
     height: 256
 }
 
-export default function resize(app) {
+function resize(app) {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     let newGameWidth;
