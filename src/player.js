@@ -40,7 +40,7 @@ function frictionComponent(magnitude, velocity) {
     return {
         magnitude,
         update(delta) {
-            const { magnitude: velocityMagnitude } = velocity.vector.getEuclidean();
+            const velocityMagnitude = velocity.vector.getMagnitude();
             setMagnitude(velocity.vector, velocityMagnitude - velocityMagnitude * this.magnitude * (delta / 1000));
         }
     }
@@ -115,7 +115,7 @@ function timeSpentWalkingComponent(threshold, velocity) {
         threshold,
         timeSpentWalking: 0,
         update(delta) {
-            const { magnitude } = velocity.vector.getEuclidean();
+            const magnitude = velocity.vector.getMagnitude();
             if (magnitude <= this.threshold) {
                 this.timeSpentWalking = 0;
             } else {

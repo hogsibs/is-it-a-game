@@ -11,9 +11,8 @@ export function euclideanVector(angle, magnitude) {
 }
 
 export function setMagnitude(vector, magnitude) {
-    const euclidean = vector.getEuclidean();
-    euclidean.magnitude = magnitude;
-    vector.setEuclidean(euclidean);
+    const angle = vector.getAngle();
+    vector.setEuclidean({ angle, magnitude });
 }
 
 class LazyVector {
@@ -61,9 +60,15 @@ class LazyVector {
     }
     getEuclidean() {
         return {
-            angle: this.angle.getValue(),
-            magnitude: this.magnitude.getValue()
+            angle: this.getAngle(),
+            magnitude: this.getMagnitude()
         };
+    }
+    getAngle() {
+        return this.angle.getValue();
+    }
+    getMagnitude() {
+        return this.magnitude.getValue();
     }
 }
 
