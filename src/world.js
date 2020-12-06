@@ -1,5 +1,6 @@
-export function buildWorld()
-{
+import boundingBox from "./collision/boundingBox";
+
+export function buildWorld() {
     return {
         size: {
             width: 256,
@@ -14,31 +15,19 @@ export function buildWorld()
         solids: [
             {
                 name: 'bed',
-                x: 64,
-                y: 160,
-                width: 16,
-                height: 32
+                boundingBox: boundingBox(16, 32, { x: 64, y: 160 })
             },
             {
                 name: 'desk',
-                x: 64,
-                y: 80,
-                width: 48,
-                height: 16
+                boundingBox: boundingBox(48, 16, { x: 64, y: 80 })
             },
             {
                 name: 'plant',
-                x: 160,
-                y: 160,
-                width: 16,
-                height: 32
+                boundingBox: boundingBox(16, 32, { x: 160, y: 160 })
             },
             {
                 name: 'console',
-                x: 112,
-                y: 128,
-                width: 16,
-                height: 32
+                boundingBox: boundingBox(16, 32, { x: 112, y: 128 })
             }
         ]
     };

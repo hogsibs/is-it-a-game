@@ -1,6 +1,7 @@
 import controller from "./controller";
 import playerSprite from "./playerSprite";
 import { cartesianVector, setMagnitude } from "./vector";
+import boundingBoxComponent from "./collision/boundingBox";
 
 export function buildPlayer() {
     const position = {
@@ -14,13 +15,17 @@ export function buildPlayer() {
     const timeSpentWalking = timeSpentWalkingComponent(20, velocity);
     const direction = playerDirectionComponent(velocity);
 
+    const boundingBox = boundingBoxComponent(16, 16, position);
+    
     return {
         position,
+        boundingBox,
         components: [
             playerControlledComponent(1200, controller, acceleration),
             acceleration,
             friction,
             velocity,
+            boundingBox,
             timeSpentWalking,
             direction
         ],
