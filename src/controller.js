@@ -9,6 +9,14 @@ export default controller;
 
 bindArrowKeys("keydown");
 bindArrowKeys("keyup");
+addEventListener(
+    "blur",
+    () => {
+        controller.up = false;
+        controller.right = false;
+        controller.down = false;
+        controller.left = false;
+    });
 
 function bindArrowKeys(eventName)
 {
