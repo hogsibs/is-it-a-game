@@ -16,7 +16,7 @@ function update(delta, gameState)
     gameState.world.solids.forEach(solid => {
         const overlap = boundingBoxOverlap(gameState.player.boundingBox, solid.boundingBox);
         if (overlap) {
-            gameState.player.position.x -= overlap.x;
+            gameState.player.position.x += overlap.x;
             gameState.player.position.y += overlap.y;
         }
     });
